@@ -13,31 +13,31 @@
             width: 100%; height: 100%; overflow: hidden; background-color: #000;
         }
 
-        /* Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        /* YATAY & DİKEY SCROLLBAR STİLİ */
+        .custom-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-scroll::-webkit-scrollbar-track { background: #111827; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #dc2626; }
 
-        /* --- VIDEO WRAPPER --- */
+        /* --- VIDEO WRAPPER (DÜZELTİLDİ: Artık listeyi aşağı itemeyecek) --- */
         .video-wrapper {
-            width: 100%; height: 100%; background: #000; position: relative; overflow: hidden;
+            position: absolute; inset: 0; background: #000; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
         
         video { width: 100% !important; height: 100% !important; object-fit: contain !important; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- KANAL KARTLARI --- */
+        /* --- YATAY KANAL KARTLARI --- */
         .channel-item {
-            transition: all 0.2s ease; border-left: 3px solid transparent;
+            transition: all 0.2s ease; border: 1px solid transparent;
         }
-        .channel-item:hover { background-color: #1f2937; }
+        .channel-item:hover { background-color: #1f2937; border-color: #4b5563; }
         .channel-item:active { transform: scale(0.98); }
         
         .active-channel { 
             background: #1f2937 !important;
-            border-left: 3px solid #dc2626 !important;
+            border-color: #dc2626 !important;
             box-shadow: inset 0 0 20px rgba(220, 38, 38, 0.1);
         }
         .active-channel .channel-name { color: #dc2626 !important; font-weight: bold; }
@@ -142,22 +142,9 @@
         </div>
     </header>
 
-    <main class="flex-1 flex flex-col md:flex-row min-h-0 relative">
+    <main class="flex-1 flex flex-col relative min-h-0">
         
-        <aside class="w-full md:w-80 flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col z-20 h-[40vh] md:h-full order-2 md:order-1">
-            <div class="p-3 border-b border-gray-800 bg-gray-900 sticky top-0 z-10 flex justify-between items-center shadow-sm">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Channel List</span>
-                <span class="bg-red-900/30 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded border border-red-900/50" id="channelCount">0</span>
-            </div>
-            <div id="channelList" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1">
-                <div class="flex flex-col items-center justify-center h-40 text-gray-500">
-                    <i class="fas fa-circle-notch fa-spin mb-2"></i> Loading...
-                </div>
-            </div>
-        </aside>
-
-        <section class="flex-1 bg-black relative flex flex-col min-w-0 order-1 md:order-2 h-[60vh] md:h-full">
-            
+        <section class="flex-1 bg-black relative min-w-0 min-h-0 flex flex-col">
             <div id="playerWrapper" class="video-wrapper">
                 <div id="countryOverlay" class="absolute inset-0 z-[100] hidden overflow-y-auto p-6 flex flex-col">
                     <div class="flex justify-between items-center mb-6 sticky top-0 z-10 bg-black/80 p-2 rounded-lg border border-gray-800 backdrop-blur">
@@ -169,7 +156,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-20" id="countryGrid"></div>
                 </div>
 
-                <div id="placeholderContent" class="absolute inset-0 flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center">
+                <div id="placeholderContent" class="absolute inset-0 flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center z-10">
                     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
                     
                     <div class="relative z-10 max-w-sm w-full tg-card rounded-xl p-6 text-center transform scale-95 md:scale-100">
@@ -188,7 +175,6 @@
                                 </div>
                                 <i class="fas fa-check-circle text-green-500 text-xs opacity-50"></i>
                             </div>
-                            
                             <div class="tg-badge rounded-lg p-3 flex items-center justify-between">
                                 <div class="flex items-center">
                                     <i class="fab fa-telegram text-gray-400 text-lg mr-3"></i>
@@ -196,10 +182,6 @@
                                 </div>
                                 <i class="fas fa-check-circle text-green-500 text-xs opacity-50"></i>
                             </div>
-                        </div>
-                        
-                        <div class="mt-6 pt-4 border-t border-gray-800">
-                            <p class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Select a channel from the list</p>
                         </div>
                     </div>
                 </div>
@@ -213,6 +195,19 @@
                 Waiting...
             </div>
         </section>
+
+        <aside class="w-full flex-shrink-0 bg-gray-900 border-t border-gray-800 flex flex-col z-20 h-28 sm:h-32">
+            <div class="px-3 py-1.5 border-b border-gray-800 bg-gray-900 flex justify-between items-center shadow-sm">
+                <span class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider">Channel List</span>
+                <span class="bg-red-900/30 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded border border-red-900/50" id="channelCount">0</span>
+            </div>
+            <div id="channelList" class="flex-1 overflow-x-auto overflow-y-hidden custom-scroll p-2 flex gap-2 items-center relative z-20">
+                <div class="flex flex-col items-center justify-center w-full text-gray-500">
+                    <i class="fas fa-circle-notch fa-spin mb-2"></i> Loading...
+                </div>
+            </div>
+        </aside>
+
     </main>
 
     <script>
@@ -230,11 +225,8 @@
         
         // --- INTERNET CONNECTION HANDLING ---
         function updateOnlineStatus() {
-            if (navigator.onLine) {
-                offlineScreen.classList.add('hidden');
-            } else {
-                offlineScreen.classList.remove('hidden');
-            }
+            if (navigator.onLine) offlineScreen.classList.add('hidden');
+            else offlineScreen.classList.remove('hidden');
         }
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
@@ -318,11 +310,8 @@
 
         function updateCountryDisplay(code) {
             const country = countryList.find(c => c.code === code) || { name: code.toUpperCase(), flag: '🏳️' };
-            // Mobil için sadece Bayrak, Masaüstü için Bayrak + İsim
             const displayEl = document.getElementById('selectedCountryDisplay');
             if(displayEl) displayEl.innerHTML = `${country.flag} ${country.name}`;
-            
-            // Mobilde sadece bayrak gösterimi için CSS class'ları html içinde ayarlandı
         }
         
         const BASE_URL = "https://raw.githubusercontent.com/famelack/famelack-data/refs/heads/main/tv/raw/countries/";
@@ -345,7 +334,6 @@
             localStorage.setItem('tvPlayerZoom', currentFontSize);
         }
 
-        // Zoom ayarını yükle
         const storedZoom = localStorage.getItem('tvPlayerZoom');
         if(storedZoom) document.documentElement.style.fontSize = storedZoom + 'px';
 
@@ -395,7 +383,7 @@
             if (index > -1) favoriteChannels.splice(index, 1);
             else favoriteChannels.push(channel);
             localStorage.setItem('tvPlayerFavorites', JSON.stringify(favoriteChannels));
-            renderChannels(playableChannels); 
+            renderChannels(allChannels); 
         }
 
         function isFavorite(channel) {
@@ -406,8 +394,8 @@
             if (!navigator.onLine) return; 
 
             channelListEl.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-40 text-gray-500 w-full">
-                    <i class="fas fa-circle-notch fa-spin text-2xl text-red-600 mb-3"></i>
+                <div class="flex flex-col items-center justify-center h-full text-gray-500 w-full">
+                    <i class="fas fa-circle-notch fa-spin text-2xl text-red-600 mb-2"></i>
                     <span class="text-xs">Updating Channel List...</span>
                 </div>`;
             try {
@@ -416,7 +404,7 @@
                 allChannels = await response.json();
                 renderChannels(allChannels);
             } catch (error) {
-                channelListEl.innerHTML = '<div class="p-4 text-center text-red-400 text-xs mt-10">No channels found for this country.<br>Please try another.</div>';
+                channelListEl.innerHTML = '<div class="flex items-center justify-center w-full text-center text-red-400 text-xs">No channels found for this country.<br>Please try another.</div>';
                 channelCountEl.innerText = "0";
             }
         }
@@ -424,15 +412,21 @@
         function renderChannels(channels) {
             channelListEl.innerHTML = '';
             
+            channels.forEach(ch => {
+                if (!Array.isArray(ch.stream_urls)) ch.stream_urls = [];
+                if (!Array.isArray(ch.youtube_urls)) ch.youtube_urls = [];
+                
+                ch.iptv_urls = ch.stream_urls;
+            });
+
             playableChannels = channels.filter(ch => 
-                (ch.iptv_urls && ch.iptv_urls.length > 0) || 
-                (ch.youtube_urls && ch.youtube_urls.length > 0)
+                ch.iptv_urls.length > 0 || ch.youtube_urls.length > 0
             );
             
             channelCountEl.innerText = playableChannels.length;
 
             if (playableChannels.length === 0) {
-                channelListEl.innerHTML = '<div class="p-4 text-center text-gray-500 text-xs mt-10">No active channels found.</div>';
+                channelListEl.innerHTML = '<div class="flex items-center justify-center w-full text-gray-500 text-xs">No active channels found.</div>';
                 return;
             }
 
@@ -441,19 +435,22 @@
 
             if (favs.length > 0) {
                 const favTitle = document.createElement('div');
-                favTitle.className = "text-[10px] uppercase font-bold text-red-500 px-2 mt-2 mb-1 opacity-70";
-                favTitle.innerText = "Favorites";
+                favTitle.className = "flex-shrink-0 text-[10px] uppercase font-bold text-red-500 px-3 flex items-center justify-center h-full bg-gray-800/30 rounded border border-gray-800";
+                favTitle.innerHTML = `<i class="fas fa-star mr-1"></i> FAVS`;
                 channelListEl.appendChild(favTitle);
+                
                 favs.forEach((channel, index) => createChannelCard(channel, index, true));
+                
                 const divider = document.createElement('div');
-                divider.className = "h-px bg-gray-800 my-2 mx-2";
+                divider.className = "w-px h-8 bg-gray-700 mx-1 flex-shrink-0";
                 channelListEl.appendChild(divider);
             }
 
             const allTitle = document.createElement('div');
-            allTitle.className = "text-[10px] uppercase font-bold text-gray-500 px-2 mt-2 mb-1 opacity-70";
-            allTitle.innerText = "All Channels";
+            allTitle.className = "flex-shrink-0 text-[10px] uppercase font-bold text-gray-500 px-3 flex items-center justify-center h-full bg-gray-800/30 rounded border border-gray-800 ml-1";
+            allTitle.innerHTML = `<i class="fas fa-list mr-1"></i> ALL`;
             channelListEl.appendChild(allTitle);
+
             others.forEach((channel, index) => createChannelCard(channel, index, false));
         }
 
@@ -462,7 +459,7 @@
             const div = document.createElement('div');
             const uniqueId = isFavList ? `fav-${index}` : `ch-${index}`;
             
-            div.className = `channel-item w-full p-3 rounded-lg cursor-pointer flex items-center group relative overflow-hidden bg-gray-800/40 border border-gray-800/50 mb-1`;
+            div.className = `channel-item w-48 sm:w-56 h-full flex-shrink-0 px-3 py-2 rounded-lg cursor-pointer flex items-center group relative overflow-hidden bg-gray-800/40 border border-gray-800/50 mx-1`;
             div.id = uniqueId;
             div.onclick = () => playChannel(channel, div);
             
@@ -473,8 +470,10 @@
                 <div class="w-8 h-8 rounded bg-gray-900 flex items-center justify-center mr-3 flex-shrink-0 border border-gray-700 shadow-sm">
                     <i class="${iconClass} text-xs"></i>
                 </div>
-                <span class="channel-name font-medium truncate flex-1 text-sm text-gray-300 tracking-wide">${channel.name}</span>
-                <button onclick="toggleFavorite(this.parentElement.channelData, event)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-700 transition z-10">
+                <div class="flex flex-col flex-1 min-w-0">
+                    <span class="channel-name font-medium truncate text-xs sm:text-sm text-gray-300 tracking-wide">${channel.name}</span>
+                </div>
+                <button onclick="toggleFavorite(this.parentElement.channelData, event)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-700 transition z-10 ml-2">
                     <i class="${heartClass} text-xs"></i>
                 </button>
             `;
