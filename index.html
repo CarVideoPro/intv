@@ -159,6 +159,10 @@
         }
 
         async function fetchChannels(code, countryName) {
+            // Son seçilen ülkeyi hafızaya kaydet
+            localStorage.setItem('lastCountryCode', code);
+            localStorage.setItem('lastCountryName', countryName);
+            
             const list = document.getElementById('channel-list');
             list.innerHTML = `<div class="p-6 text-center text-blue-500"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i></div>`;
             showChannelsPanel(countryName);
@@ -226,7 +230,17 @@
                 }
             }
         }
-        document.addEventListener('DOMContentLoaded', renderCountries);
+        
+        // Sayfa yüklendiğinde hafızayı kontrol et
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCountries();
+            const lastCode = localStorage.getItem('lastCountryCode');
+            const lastName = localStorage.getItem('lastCountryName');
+            
+            if (lastCode && lastName) {
+                fetchChannels(lastCode, lastName);
+            }
+        });
     </script>
 </body>
 </html>
