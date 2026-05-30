@@ -295,8 +295,17 @@
                 hlsPlayer.classList.add('hidden'); ytPlayer.classList.remove('hidden');
                 ytPlayer.src = `https://www.youtube-nocookie.com/embed/${ytID}?autoplay=1&modestbranding=1&rel=0`;
                 setTimeout(() => loadingOverlay.classList.add('hidden'), 1000);
+                setTimeout(() => adjustYTIFrameSize(), 150); // YouTube açılırken boyutu hemen ayarla
             } else {
                 ytPlayer.classList.add('hidden'); hlsPlayer.classList.remove('hidden');
+
+                // Normal videoya geçerken YouTube iframe stilini sıfırla
+                ytPlayer.style.width = '100%';
+                ytPlayer.style.height = '100%';
+                ytPlayer.style.top = '0';
+                ytPlayer.style.left = '0';
+                ytPlayer.style.transform = 'none';
+
                 if (Hls.isSupported()) {
                     hls = new Hls(); hls.loadSource(url); hls.attachMedia(hlsPlayer);
                     hls.on(Hls.Events.MANIFEST_PARSED, () => { loadingOverlay.classList.add('hidden'); hlsPlayer.play(); });
@@ -319,13 +328,18 @@
                     if (container) {
                         try {
                             if (container.requestFullscreen) {
-                                container.requestFullscreen().catch(err => console.log("Fullscreen request failed:", err));
+                                container.requestFullscreen().then(() => {
+                                    setTimeout(adjustYTIFrameSize, 150);
+                                }).catch(err => console.log("Fullscreen request failed:", err));
                             } else if (container.webkitRequestFullscreen) {
                                 container.webkitRequestFullscreen();
+                                setTimeout(adjustYTIFrameSize, 150);
                             } else if (container.mozRequestFullScreen) {
                                 container.mozRequestFullScreen();
+                                setTimeout(adjustYTIFrameSize, 150);
                             } else if (container.msRequestFullscreen) {
                                 container.msRequestFullscreen();
+                                setTimeout(adjustYTIFrameSize, 150);
                             } else {
                                 // iOS Safari video element fullscreen fallback
                                 const activePlayer = !hlsPlayer.classList.contains('hidden') ? hlsPlayer : ytPlayer;
@@ -340,6 +354,60 @@
                 }, 3000);
             }
         }
+
+        // YouTube Iframe'ini tam ekrana yaymak (siyah bölgeleri germek) için matematiksel oranlayıcı
+        function adjustYTIFrameSize() {
+            const ytPlayer = document.getElementById('yt-player');
+            const container = document.querySelector('.video-container');
+            if (!ytPlayer || ytPlayer.classList.contains('hidden') || !container) return;
+
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            if (w === 0 || h === 0) return;
+
+            const screenRatio = w / h;
+            const targetRatio = 16 / 9;
+
+            // Stilleri sıfırlayalım
+            ytPlayer.style.top = '0';
+            ytPlayer.style.left = '0';
+            ytPlayer.style.width = '100%';
+            ytPlayer.style.height = '100%';
+            ytPlayer.style.transform = 'none';
+
+            if (screenRatio > targetRatio) {
+                // Yatay geniş/uzun ekranlar (örn: arabalardaki uzun yatay ekranlar)
+                // Iframe'i tam 16:9 oranında yapıp ortalıyoruz, ardından scaleX ile yatayda tam ekrana geriyoruz.
+                const iframeWidth = h * targetRatio;
+                ytPlayer.style.width = iframeWidth + 'px';
+                ytPlayer.style.height = h + 'px';
+                ytPlayer.style.left = '50%';
+                ytPlayer.style.top = '0';
+
+                const scaleX = w / iframeWidth;
+                ytPlayer.style.transform = `translateX(-50%) scaleX(${scaleX})`;
+                ytPlayer.style.transformOrigin = 'center center';
+            } else if (screenRatio < targetRatio) {
+                // Dikey ekranlar
+                // Iframe'i dikeyde 16:9 oranında yapıp ortalıyoruz, ardından scaleY ile dikeyde geriyoruz.
+                const iframeHeight = w / targetRatio;
+                ytPlayer.style.width = w + 'px';
+                ytPlayer.style.height = iframeHeight + 'px';
+                ytPlayer.style.left = '0';
+                ytPlayer.style.top = '50%';
+
+                const scaleY = h / iframeHeight;
+                ytPlayer.style.transform = `translateY(-50%) scaleY(${scaleY})`;
+                ytPlayer.style.transformOrigin = 'center center';
+            }
+        }
+
+        // Ekran boyutu veya tam ekran durumu değiştiğinde YouTube oranlayıcıyı tetikle
+        window.addEventListener('resize', adjustYTIFrameSize);
+        document.addEventListener('fullscreenchange', adjustYTIFrameSize);
+        document.addEventListener('webkitfullscreenchange', adjustYTIFrameSize);
+        document.addEventListener('mozfullscreenchange', adjustYTIFrameSize);
+        document.addEventListener('MSFullscreenChange', adjustYTIFrameSize);
 
         // Sayfa yüklendiğinde hafızayı kontrol et
         document.addEventListener('DOMContentLoaded', () => {
